@@ -1,0 +1,28 @@
+{
+  "transactions": [
+    {
+      "id": "1",
+      "description": "Desenvolvimento de site",
+      "type": "income",
+      "category": "Venda",
+      "price": 14000,
+      "createdAt": "2024-01-30T17:30:02.684Z"
+    },
+    {
+      "id": "2",
+      "description": "Restaurante",
+      "type": "outcome",
+      "category": "Alimentação",
+      "price": 50,
+      "createdAt": "2024-04-30T19:01:32.684Z"
+    },
+    {
+      "id": "17ee",
+      "description": "Teste",
+      "price": 1000,
+      "category": "Oi",
+      "type": "income",
+      "createdAt": "2024-01-30T20:19:17.151Z"
+    }
+  ]
+}
