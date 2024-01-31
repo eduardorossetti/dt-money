@@ -1,17 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as Dialog from '@radix-ui/react-dialog'
 import { ArrowCircleDown, ArrowCircleUp, X } from 'phosphor-react'
+import { useContext } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { z } from 'zod'
+import * as z from 'zod'
+import { TransactionsContext } from '../../contexts/TransactionsContext'
+
 import {
   CloseButton,
   Content,
   Overlay,
-  TransactionsType,
-  TransactionsTypeButton,
+  TransactionType,
+  TransactionTypeButton,
 } from './styles'
-import { useContext } from 'react'
-import { TransactionsContext } from '../../contexts/TransactionsContext'
 
 const newTransactionFormSchema = z.object({
   description: z.string(),
@@ -20,32 +21,31 @@ const newTransactionFormSchema = z.object({
   type: z.enum(['income', 'outcome']),
 })
 
-type newTransactionFormInputs = z.infer<typeof newTransactionFormSchema>
+type NewTransactionFormInputs = z.infer<typeof newTransactionFormSchema>
 
 export function NewTransactionModal() {
   const { createTransaction } = useContext(TransactionsContext)
 
-  const newTransactionForm = useForm<newTransactionFormInputs>({
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { isSubmitting },
+    reset,
+  } = useForm<NewTransactionFormInputs>({
     resolver: zodResolver(newTransactionFormSchema),
     defaultValues: {
       type: 'income',
     },
   })
 
-  const {
-    register,
-    handleSubmit,
-    formState: { isSubmitting },
-    control,
-    reset,
-  } = newTransactionForm
+  async function handleCreateNewTransaction(data: NewTransactionFormInputs) {
+    const { description, price, category, type } = data
 
-  async function handleCreateNewTransaction(data: newTransactionFormInputs) {
-    const { description, category, price, type } = data
     await createTransaction({
       description,
-      category,
       price,
+      category,
       type,
     })
 
@@ -55,6 +55,7 @@ export function NewTransactionModal() {
   return (
     <Dialog.Portal>
       <Overlay />
+
       <Content>
         <Dialog.Title>Nova Transação</Dialog.Title>
 
@@ -87,19 +88,19 @@ export function NewTransactionModal() {
             name="type"
             render={({ field }) => {
               return (
-                <TransactionsType
+                <TransactionType
                   onValueChange={field.onChange}
                   value={field.value}
                 >
-                  <TransactionsTypeButton variant="income" value="income">
+                  <TransactionTypeButton variant="income" value="income">
                     <ArrowCircleUp size={24} />
                     Entrada
-                  </TransactionsTypeButton>
-                  <TransactionsTypeButton variant="outcome" value="outcome">
+                  </TransactionTypeButton>
+                  <TransactionTypeButton variant="outcome" value="outcome">
                     <ArrowCircleDown size={24} />
                     Saída
-                  </TransactionsTypeButton>
-                </TransactionsType>
+                  </TransactionTypeButton>
+                </TransactionType>
               )
             }}
           />
